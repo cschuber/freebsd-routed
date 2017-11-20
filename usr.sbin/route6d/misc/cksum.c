@@ -1,8 +1,8 @@
 /*-
  * SPDX-License-Identifier: BSD-3-Clause
  *
- * Copyright (c) 1989, 1993
- *	The Regents of the University of California.  All rights reserved.
+ * Copyright (C) 1995, 1996, 1997, and 1998 WIDE Project.
+ * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -12,14 +12,14 @@
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
- * 3. Neither the name of the University nor the names of its contributors
+ * 3. Neither the name of the project nor the names of its contributors
  *    may be used to endorse or promote products derived from this software
  *    without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
+ * THIS SOFTWARE IS PROVIDED BY THE PROJECT AND CONTRIBUTORS ``AS IS'' AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
+ * ARE DISCLAIMED.  IN NO EVENT SHALL THE PROJECT OR CONTRIBUTORS BE LIABLE
  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
  * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
@@ -28,27 +28,27 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *	@(#)pathnames.h	8.1 (Berkeley) 6/5/93
- *
  * $FreeBSD$
  */
 
-#include <paths.h>
+#include <stdio.h>
 
-#define	_PATH_GATEWAYS	"/etc/gateways"
+unsigned short buf[BUFSIZ];
 
-/* All remotely requested trace files must either start with this prefix
- * or be the same as the tracefile specified when the daemon was started.
- * If this is a directory, routed will create log files in it.  That
- * might be a security problem.  However, if bad guys can write in the
- * default value, /etc, you have far worse security problems than anything
- * this might do.  In other words, it makes no sense to turn this off.
- *
- * Leave this undefined, and only the trace file originally specified
- * when routed was started, if any, will be appended to.
- */
-#ifndef __NetBSD__
-#define _PATH_TRACE	"/etc/routed.trace"
-#else
-#undef _PATH_TRACE
-#endif
+main()
+{
+	int	i;
+	unsigned short *p = buf, *q = &buf[4];
+	unsigned long sum, sum2;
+
+	while (scanf("%x", &i) != EOF) {
+		*p++ = i; printf("%d ", i);
+	}
+	printf("\n");
+
+	sum = buf[2] + (buf[3] >> 8) & 0xff;
+	while (q != p)
+		sum += (*q++ & 0xffff);
+	sum2 = (sum & 0xffff) + (sum >> 16) & 0xffff;
+	printf("%x, %x\n", sum, sum2);
+}
